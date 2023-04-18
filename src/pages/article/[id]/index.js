@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { server } from "@/config";
+import Meta from "@/components/Meta";
 
 const article = ({ article }) => {
   //   const router = useRouter();
   //   const { id } = router.query;
   return (
     <>
+      <Meta title="Article" description={article.excerpt} />
       <h1>{article.title}</h1>
       <p>{article.body}</p>
       <br />
@@ -15,9 +18,7 @@ const article = ({ article }) => {
 };
 
 export const getStaticProps = async (ctx) => {
-  const res = await fetch(
-    `https://jsonplaceholder.typicode.com/posts/${ctx.params.id}`
-  );
+  const res = await fetch(`${server}/api/articles/${ctx.params.id}`);
   const article = await res.json();
   return {
     props: {
@@ -27,7 +28,7 @@ export const getStaticProps = async (ctx) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+  const res = await fetch(`${server}/api/articles`);
   const articles = await res.json();
   const ids = articles.map((article) => article.id);
   const paths = ids.map((id) => ({
@@ -42,7 +43,33 @@ export const getStaticPaths = async () => {
   };
 };
 
-export default article;
+// export const getStaticProps = async (ctx) => {
+//   const res = await fetch(
+//     `https://jsonplaceholder.typicode.com/posts/${ctx.params.id}`
+//   );
+//   const article = await res.json();
+//   return {
+//     props: {
+//       article,
+//     },
+//   };
+// };
+
+// export const getStaticPaths = async () => {
+//   const res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+//   const articles = await res.json();
+//   const ids = articles.map((article) => article.id);
+//   const paths = ids.map((id) => ({
+//     params: {
+//       id: id.toString(),
+//     },
+//   }));
+
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// };
 
 // export const getServerSideProps = async (ctx) => {
 //     const res = await fetch(
@@ -55,3 +82,5 @@ export default article;
 //       },
 //     };
 //   };
+
+export default article;
